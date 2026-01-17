@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WavRyder | Institutional Precision</title>
+    <style>
+        :root {
+            --primary: #064e3b; 
+            --gold: #e9c46a;    
+            --gold-gradient: linear-gradient(135deg, #e9c46a 0%, #f4d35e 50%, #d4a373 100%);
+            --accent: #10b981;  
+            --dark: #0a2a23;
+            --card-bright: #1a4d42;
+        }
+
+        html, body { margin: 0; padding: 0; min-height: 100vh; background: #ffffff; font-family: 'Helvetica Neue', Arial, sans-serif; overflow-x: hidden; scroll-behavior: smooth; color: #333; }
+
+        /* NAVBAR ENHANCEMENT: Glassmorphism */
+        .nav { 
+            background: rgba(6, 78, 59, 0.95); 
+            backdrop-filter: blur(10px);
+            padding: 15px 5%; 
+            border-bottom: 2px solid var(--gold); 
+            display: flex; justify-content: space-between; align-items: center; 
+            position: sticky; top: 0; z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .nav img { height: 38px; width: auto; }
+        .nav-links { display: flex; align-items: center; gap: 20px; }
+        .nav-links a { color: white; text-decoration: none; font-weight: 600; font-size: 13px; transition: 0.3s; white-space: nowrap; letter-spacing: 0.5px; }
+        .nav-links a:hover { color: var(--gold); }
+        
+        .btn-gold { 
+            background: var(--gold-gradient);
+            color: #064e3b !important; 
+            padding: 8px 18px; border-radius: 4px; 
+            border: none;
+            box-shadow: 0 2px 10px rgba(233,196,106,0.3);
+        }
+
+        /* HERO */
+        .hero { background: var(--primary); color: white; text-align: center; padding: 120px 10%; background-image: radial-gradient(circle at top right, rgba(16,185,129,0.1), transparent); }
+        .hero h1 { font-size: 52px; margin: 0; font-weight: 800; line-height: 1.1; letter-spacing: -1px; }
+        .hero h1 span { color: var(--gold); background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { font-size: 22px; opacity: 0.9; margin-top: 25px; font-weight: 300; }
+
+        /* SECTIONS */
+        .section { padding: 90px 8%; display: block; clear: both; width: 100%; box-sizing: border-box; }
+        .section-title { text-align: center; font-size: 34px; margin-bottom: 60px; font-weight: 800; color: var(--primary); position: relative; }
+        .section-title::after { content: ''; display: block; width: 50px; height: 3px; background: var(--gold); margin: 15px auto; }
+        .grid { display: flex; flex-wrap: wrap; gap: 25px; justify-content: center; }
+
+        /* PHILOSOPHY */
+        .phil-card { flex: 1 1 220px; background: #f8faf9; padding: 35px; border-top: 4px solid var(--accent); border-radius: 8px; text-align: center; transition: 0.3s; border-bottom: 1px solid #eee; }
+        .phil-card h4 { margin-top: 0; color: var(--primary); font-size: 18px; }
+        .phil-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+
+        /* INTELLIGENCE CARDS */
+        .dark-page { background: #114136; color: white; }
+        .ana-card { 
+            flex: 1 1 260px; height: 380px; 
+            background: var(--card-bright); 
+            border: 1px solid rgba(233,196,106,0.2);
+            border-radius: 12px; position: relative; overflow: hidden; cursor: pointer;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s;
+        }
+        .ana-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); border-color: var(--gold); }
+        
+        /* Indicators Box Glow Enhancement */
+        .indicator-bg {
+            width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1;
+            background: radial-gradient(circle at center, #1a4d42 0%, #0a2a23 100%);
+            display: flex; justify-content: center; align-items: center; opacity: 1; transition: 0.4s;
+        }
+        .signal-housing {
+            width: 75px; height: 145px; background: #0a0a0a; border-radius: 38px;
+            border: 2px solid #333; display: flex; flex-direction: column;
+            justify-content: space-around; align-items: center; padding: 12px 0;
+            box-shadow: inset 0 0 10px #000;
+        }
+        .light-off { width: 45px; height: 45px; background: #1a1a1a; border-radius: 50%; border: 1px solid #333; }
+        .light-green { 
+            width: 45px; height: 45px; background: #22c55e; border-radius: 50%; 
+            box-shadow: 0 0 15px #22c55e, 0 0 30px rgba(34, 197, 94, 0.6), inset 0 0 10px rgba(255,255,255,0.5);
+            border: 2px solid #4ade80;
+        }
+
+        .ana-card img { width: 100%; height: 100%; object-fit: cover; opacity: 0.75; position: absolute; top: 0; left: 0; z-index: 1; transition: 0.5s; }
+
+        .ana-content { 
+            position: absolute; bottom: 0; left: 0; width: 100%; padding: 30px; 
+            box-sizing: border-box; z-index: 2; 
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 10%, rgba(0,0,0,0) 100%); 
+        }
+        
+        .ana-card h3 { color: var(--gold); margin: 0; font-size: 20px; transition: 0.3s; }
+        .ana-desc { display: none; font-size: 14px; color: #e2e8f0; margin-top: 15px; line-height: 1.4; }
+
+        .ana-card:hover img, .ana-card:hover .indicator-bg { opacity: 0.2; }
+        .ana-card:hover .ana-content { height: 100%; display: flex; flex-direction: column; justify-content: center; background: rgba(0,0,0,0.8); }
+        .ana-card:hover .ana-desc { display: block; }
+
+        /* SUBSCRIPTION */
+        .sub-card { flex: 1 1 300px; background: white; border: 1px solid #eee; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: 0.3s; }
+        .sub-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.08); }
+        .sub-pic { height: 200px; background: var(--primary); position: relative; }
+        .sub-pic img { width: 100%; height: 100%; object-fit: cover; opacity: 0.85; }
+        .sub-info { padding: 30px; text-align: center; }
+        .sub-info h4 { margin: 0 0 10px 0; font-size: 20px; color: var(--primary); }
+        .sub-info p { margin: 0; color: #666; font-size: 15px; }
+
+        /* ABOUT BOX */
+        .about-box { background: #f0f4f2; border-left: 6px solid var(--primary); padding: 50px; border-radius: 12px; max-width: 900px; margin: 0 auto; box-shadow: inset 0 0 20px rgba(0,0,0,0.02); }
+        .about-box p { font-size: 19px; line-height: 1.7; color: #2d3748; margin: 0; font-weight: 400; }
+
+        /* FOOTER */
+        .footer { background: #042f24; color: #cbd5e0; padding: 80px 8%; border-top: 2px solid var(--gold); }
+    </style>
+</head>
+<body>
+
+    <nav class="nav">
+        <img src="https://media.beehiiv.com/cdn-cgi/image/format=auto,fit=scale-down,onerror=redirect/uploads/asset/file/4ed0d375-818a-4169-b3f6-592a00237f07/Stacked_Custom_for_mobile_navbar_1.9.2026_Primary__Wave___2F5F58_Text__3F3F3F_Background__F7F8F6_Accent__Soft_Neutral__E6EAE5.PNG">
+        <div class="nav-links">
+            <a href="#about">About</a>
+            <a href="#indicators">Indicators</a>
+            <a href="#cases">Case Studies</a>
+            <a href="#portfolio">Analysis</a>
+            <a href="#workshops">Workshops</a>
+            <a href="#" class="btn-gold">Subscribe</a>
+        </div>
+    </nav>
+
+    <div class="hero">
+        <h1>Pursue More <span>Upside</span><br>Control The Downside</h1>
+        <p>Institutional-grade market signals for the serious investor.</p>
+    </div>
+
+    <section class="section">
+        <div class="section-title">Sophisticated Rebalancing</div>
+        <div class="grid">
+            <div class="phil-card"><h4>Signal Driven</h4><p>Rules-based logic removes emotional bias.</p></div>
+            <div class="phil-card"><h4>Risk First</h4><p>Capital protection is the primary mandate.</p></div>
+            <div class="phil-card"><h4>Daily Cadence</h4><p>Simple execution with clear signals.</p></div>
+            <div class="phil-card"><h4>Self-Directed</h4><p>Full control using institutional data.</p></div>
+        </div>
+    </section>
+
+    <section class="section dark-page">
+        <div class="section-title" style="color:white;">Systematic Market Intelligence</div>
+        <div class="grid">
+            
+            <div class="ana-card" id="indicators">
+                <div class="indicator-bg">
+                    <div class="signal-housing">
+                        <div class="light-off"></div>
+                        <div class="light-green"></div>
+                    </div>
+                </div>
+                <div class="ana-content">
+                    <h3>Sample Indicators</h3>
+                    <div class="ana-desc">Historical signal accuracy and performance metrics based on multi-factor market analysis.</div>
+                </div>
+            </div>
+
+            <div class="ana-card" id="cases">
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800">
+                <div class="ana-content">
+                    <h3>Case Studies</h3>
+                    <div class="ana-desc">Deep-dive analysis of signal behavior during historical volatility regimes and market shifts.</div>
+                </div>
+            </div>
+
+            <div class="ana-card" id="workshops">
+                <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?w=800">
+                <div class="ana-content">
+                    <h3>Workshops</h3>
+                    <div class="ana-desc">Professional training sessions on systematic investing discipline and execution strategy.</div>
+                </div>
+            </div>
+
+            <div class="ana-card" id="portfolio">
+                <img src="https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=800">
+                <div class="ana-content">
+                    <h3>Portfolio Analysis</h3>
+                    <div class="ana-desc">Institutional-grade metrics and stress-testing to optimize your current equity holdings.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="section-title">The WavRyder Subscription</div>
+        <div class="grid">
+            <div class="sub-card">
+                <div class="sub-pic"><img src="https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?w=500"></div>
+                <div class="sub-info"><h4>Daily Update</h4><p>Actionable signals delivered directly to your inbox every market morning.</p></div>
+            </div>
+            <div class="sub-card">
+                <div class="sub-pic"><img src="https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=500"></div>
+                <div class="sub-info"><h4>Monthly Trend</h4><p>Comprehensive macro analysis of regime changes and structural behavior.</p></div>
+            </div>
+            <div class="sub-card">
+                <div class="sub-pic"><img src="https://images.unsplash.com/photo-1551434678-e076c223a692?w=500"></div>
+                <div class="sub-info"><h4>Education</h4><p>Ongoing support and documentation for institutional-level signal execution.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="about">
+        <div class="section-title">About WavRyder</div>
+        <div class="about-box">
+            <p>WavRyder delivers institutional-level market intelligence and systematic rules-based logic to self-directed investors. We focus on removing emotional bias through data-driven signals, allowing you to capture upside while maintaining rigorous downside control.</p>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div style="border-left: 4px solid var(--gold); padding-left: 25px; font-size: 15px; line-height: 1.8; max-width: 800px;">
+            <strong>Institutional Disclosure:</strong> WavRyder provides market data and signal information for educational purposes only. All investment decisions and risk management are the sole responsibility of the individual investor.
+        </div>
+        <p style="margin-top: 60px; text-align: center; font-size: 13px; opacity: 0.6; letter-spacing: 1px;">&copy; 2026 WAVRYDER | ALL RIGHTS RESERVED</p>
+    </footer>
+
+</body>
+</html>
